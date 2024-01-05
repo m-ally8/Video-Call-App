@@ -85,6 +85,14 @@
             document.getElementById('hangupButton').addEventListener('click', () => {
                 // Implement your logic to end the video call
                 console.log('Video call ended');
+                 // Close the data channel if it exists
+                if (dataChannel) {
+                    dataChannel.close();
+                }
+                // Close the peer connection
+                if (peerConnection) {
+                    peerConnection.close();
+                }
                 updateUIState(false);
             });
         
