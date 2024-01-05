@@ -79,11 +79,13 @@
             document.getElementById('startButton').addEventListener('click', () => {
                 // Implement your logic to initiate a video call
                 console.log('Video call started');
+                updateUIState(true);
             });
     
             document.getElementById('hangupButton').addEventListener('click', () => {
                 // Implement your logic to end the video call
                 console.log('Video call ended');
+                updateUIState(false);
             });
         
 
@@ -94,19 +96,6 @@
             document.getElementById('dataChannelInput').disabled = !isCalling;
             document.getElementById('sendDataButton').disabled = !isCalling;
         }
-
-        // Event handlers for buttons
-        document.getElementById('startButton').addEventListener('click', () => {
-            // Implement your logic to initiate a video call
-            console.log('Video call started');
-            updateUIState(true);
-        });
-
-        document.getElementById('hangupButton').addEventListener('click', () => {
-            // Implement your logic to end the video call
-            console.log('Video call ended');
-            updateUIState(false);
-        });
 
         document.getElementById('sendDataButton').addEventListener('click', () => {
             // Send data through the data channel
