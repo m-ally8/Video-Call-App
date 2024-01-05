@@ -22,7 +22,70 @@
     </div>
 
     <script>
-        // ... (Previous JavaScript code)
+            // Get access to the local camera
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then(handleSuccess)
+                .catch(handleError);
+    
+            // Function to handle success when accessing the camera
+            function handleSuccess(stream) {
+                // Display the local video stream
+                document.getElementById('localVideo').srcObject = stream;
+    
+                // Set up WebRTC connection
+                const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+                const peerConnection = new RTCPeerConnection(configuration);
+    
+                // Add the local stream to the connection
+                stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+    
+                // Event handler for receiving remote stream
+                peerConnection.ontrack = event => {
+                    document.getElementById('remoteVideo').srcObject = event.streams[0];
+                };
+    
+                // Set up the data channel (you might not need this for a basic video call)
+                const dataChannel = peerConnection.createDataChannel('dataChannel');
+                
+                // Event handler for receiving data through the data channel
+                dataChannel.onmessage = event => {
+                    console.log('Received message:', event.data);
+                };
+    
+                // Set up the offer and answer negotiation
+                peerConnection.createOffer()
+                    .then(offer => peerConnection.setLocalDescription(offer))
+                    .then(() => {
+                        // Send the offer to the other user through your signaling server
+                        const offerDescription = { 'sdp': peerConnection.localDescription.sdp, 'type': peerConnection.localDescription.type };
+                        sendMessage(offerDescription);
+                    })
+                    .catch(handleError);
+            }
+    
+            // Function to handle errors when accessing the camera or setting up WebRTC
+            function handleError(error) {
+                console.error('Error accessing camera or setting up WebRTC:', error);
+            }
+    
+            // Function to send messages to the other user through your signaling server
+            function sendMessage(message) {
+                // Implement your logic to send the message to the other user
+                // You may use WebSocket or another communication method
+                console.log('Sending message:', message);
+            }
+    
+            // Event handlers for buttons
+            document.getElementById('startButton').addEventListener('click', () => {
+                // Implement your logic to initiate a video call
+                console.log('Video call started');
+            });
+    
+            document.getElementById('hangupButton').addEventListener('click', () => {
+                // Implement your logic to end the video call
+                console.log('Video call ended');
+            });
+        
 
         // Enable or disable buttons based on WebRTC connection state
         function updateUIState(isCalling) {
